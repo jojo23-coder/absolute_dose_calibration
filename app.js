@@ -1,5 +1,5 @@
 const chamberLibrary = {
-  "IBA FC65-G": {
+  "IBA FC65-G Farmer": {
     ndw: 0.04814,
     kQRev1: [
       [0.56, 1.0004],
@@ -16,8 +16,8 @@ const chamberLibrary = {
       [0.82, 0.9507]
     ],
     kQFormula: {
-      a: 1.096,
-      b: 0.096
+      a: 1.09752,
+      b: -0.09642
     },
     legacyKq: [
       [0.50, 1.0050],
@@ -57,11 +57,10 @@ const chamberLibrary = {
 };
 
 const linacLibrary = {
-  "Linac 1": { "6": 0.674, "15": 0.768 },
-  "Linac 2": { "6": 0.669, "15": 0.761, "6 SRS": 0.66 },
-  "Linac 3": { "6": 0.669, "15": 0.761 },
-  "Linac 4": { "6": 0.667, "10": 0.739, "15": 0.763, "6FFF": 0.632 },
-  "Linac 5": { "6": 0.675 }
+  "Linac 1": { "6": 0.671, "10": 0.739, "6FFF": 0.632, "10FFF": 0.707 },
+  "Linac 2": { "6": 0.671, "10": 0.739, "6FFF": 0.632, "10FFF": 0.707 },
+  "Linac 4": { "6": 0.671, "10": 0.739, "15": 0.763, "6FFF": 0.632 },
+  "Linac 5": { "6": 0.671, "10": 0.739, "15": 0.763, "6FFF": 0.632 }
 };
 
 const pressureUnits = {
@@ -91,7 +90,7 @@ const ksCoefficients = {
 };
 
 const initialState = {
-  chamber: "IBA FC65-G",
+  chamber: "IBA FC65-G Farmer",
   ndw: 0.04814,
   linac: "",
   energy: "",
@@ -271,7 +270,7 @@ function calculateKq() {
   }
 
   const { a, b } = chamberLibrary[state.chamber].kQFormula;
-  return (1 + Math.exp((0.57 - a) / b)) / (1 + Math.exp((state.tpr - a) / b));
+  return (1 + Math.exp((a - 0.57) / b)) / (1 + Math.exp((a - state.tpr) / b));
 }
 
 function syncModelToInputs() {
