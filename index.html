@@ -35,20 +35,20 @@
           </div>
           <label>
             Monitor units
-            <input id="mu" type="number" step="0.1">
+            <input id="mu" type="text" inputmode="decimal">
           </label>
           <label>
             Raw reading M [nC]
-            <input id="reading" type="number" step="0.001">
+            <input id="reading" type="text" inputmode="decimal">
           </label>
           <label>
             Temperature [C]
-            <input id="temperature" type="number" step="0.1">
+            <input id="temperature" type="text" inputmode="decimal">
           </label>
           <label>
             Pressure
             <div class="split">
-              <input id="pressure" type="number" step="0.1">
+              <input id="pressure" type="text" inputmode="decimal">
               <select id="pressureUnit"></select>
             </div>
           </label>
@@ -127,15 +127,15 @@
             </label>
             <label>
               ND,w [Gy/nC]
-              <input id="ndw" type="number" step="0.000001" readonly>
+              <input id="ndw" type="text" inputmode="decimal" readonly>
             </label>
             <label>
               TPR20/10
-              <input id="tpr" type="number" step="0.001" readonly>
+              <input id="tpr" type="text" inputmode="decimal" readonly>
             </label>
             <label>
               Reference temperature [C]
-              <input id="referenceTemperature" type="number" step="0.1" readonly>
+              <input id="referenceTemperature" type="text" inputmode="decimal" readonly>
             </label>
             <label>
               Reference pressure
@@ -151,11 +151,11 @@
             <div class="dual-grid dual-grid-tight">
               <label>
                 Electrometer correction kelec
-                <input id="kelec" type="number" step="0.0001">
+                <input id="kelec" type="text" inputmode="decimal">
               </label>
               <label>
                 Polarity correction kpol
-                <input id="kpol" type="number" step="0.0001">
+                <input id="kpol" type="text" inputmode="decimal">
               </label>
             </div>
           </div>
@@ -185,19 +185,19 @@
               </label>
               <label>
                 High voltage V1 [V]
-                <input id="v1" type="number" step="1">
+                <input id="v1" type="text" inputmode="numeric">
               </label>
               <label>
                 Reduced voltage V2 [V]
-                <input id="v2" type="number" step="1">
+                <input id="v2" type="text" inputmode="numeric">
               </label>
               <label>
                 Reading at V1, M1 [nC]
-                <input id="m1" type="number" step="0.001">
+                <input id="m1" type="text" inputmode="decimal">
               </label>
               <label>
                 Reading at V2, M2 [nC]
-                <input id="m2" type="number" step="0.001">
+                <input id="m2" type="text" inputmode="decimal">
               </label>
             </div>
 

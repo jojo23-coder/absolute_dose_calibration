@@ -113,6 +113,7 @@ const initialState = {
 };
 
 const state = loadState();
+let loadWarning = "";
 
 const ids = [
   "chamber",
@@ -164,6 +165,11 @@ function loadState() {
     nextState.pressure = "";
     nextState.m1 = "";
     nextState.m2 = "";
+    if (!Object.hasOwn(chamberLibrary, nextState.chamber)) {
+      nextState.chamber = initialState.chamber;
+      nextState.ndw = chamberLibrary[initialState.chamber].ndw;
+      loadWarning = "Saved chamber selection was not recognized and was reset to IBA FC65-G Farmer.";
+    }
     return nextState;
   } catch {
     return { ...initialState };
@@ -283,11 +289,16 @@ function syncModelToInputs() {
 }
 
 function parseNumericInput(value) {
-  return value === "" ? "" : Number(value);
+  const normalized = value.trim().replace(",", ".");
+  if (normalized === "") {
+    return "";
+  }
+  const parsed = Number(normalized);
+  return Number.isNaN(parsed) ? "" : parsed;
 }
 
 function syncInputsToModel(event) {
-  const { id, value } = event.target;
+  const { id } = event.target;
   const numericFields = new Set([
     "ndw",
     "tpr",
@@ -304,7 +315,14 @@ function syncInputsToModel(event) {
     "m2"
   ]);
 
-  state[id] = numericFields.has(id) ? parseNumericInput(value) : value;
+  let nextValue = event.target.value;
+  if (numericFields.has(id)) {
+    nextValue = nextValue.replace(",", ".");
+    event.target.value = nextValue;
+    state[id] = parseNumericInput(nextValue);
+  } else {
+    state[id] = nextValue;
+  }
 
   if (id === "chamber") {
     state.ndw = chamberLibrary[state.chamber].ndw;
@@ -323,7 +341,9 @@ function syncInputsToModel(event) {
     state.m1 = state.reading;
   }
 
-  syncModelToInputs();
+  if (id === "chamber" || id === "linac" || id === "energy") {
+    syncModelToInputs();
+  }
   saveState();
   render();
 }
@@ -356,12 +376,13 @@ function render() {
     results.dosePer100.textContent = formatNumber(dosePer100);
 
     if (state.recombinationMode === "legacy") {
-      results.status.textContent = "Legacy mode matches the spreadsheet shortcut for kS.";
+      results.status.textContent = loadWarning || "Legacy mode matches the spreadsheet shortcut for kS.";
       results.status.style.color = "var(--warn)";
     } else {
-      results.status.textContent = "TRS-398 mode uses the official two-voltage method coefficients.";
+      results.status.textContent = loadWarning || "TRS-398 mode uses the official two-voltage method coefficients.";
       results.status.style.color = "var(--ok)";
     }
+    loadWarning = "";
   } catch (error) {
     results.ktp.textContent = "—";
     results.ks.textContent = "—";
@@ -369,12 +390,16 @@ function render() {
     results.mq.textContent = "—";
     results.dw.textContent = "—";
     results.dosePer100.textContent = "—";
-    results.status.textContent = error.message;
+    results.status.textContent = loadWarning || error.message;
     results.status.style.color = "var(--warn)";
+    loadWarning = "";
   }
 }
 
 bindLibraries();
 syncModelToInputs();
-ids.forEach((id) => elements[id].addEventListener("input", syncInputsToModel));
+ids.forEach((id) => {
+  const eventName = elements[id].tagName === "SELECT" ? "change" : "input";
+  elements[id].addEventListener(eventName, syncInputsToModel);
+});
 render();
