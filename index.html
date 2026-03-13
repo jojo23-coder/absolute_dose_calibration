@@ -68,12 +68,12 @@
         </div>
         <div class="results results-primary">
           <article class="metric metric-primary">
-            <span>Dose / 100 MU [Gy]</span>
-            <strong id="resultDosePer100"></strong>
-          </article>
-          <article class="metric metric-primary">
             <span>Dw,Q [Gy]</span>
             <strong id="resultDw"></strong>
+          </article>
+          <article class="metric metric-primary">
+            <span>Varian Standard</span>
+            <strong id="resultStandard"></strong>
           </article>
         </div>
         <details class="detail-card">
@@ -140,6 +140,10 @@
             <label>
               Reference pressure
               <input id="referencePressure" type="text" readonly>
+            </label>
+            <label>
+              Expected dose [Gy]
+              <input id="expectedDose" type="text" inputmode="decimal">
             </label>
             <label>
               kQ method
@@ -219,6 +223,9 @@
             <ul class="notes">
               <li>
                 `Dw,Q = MQ × ND,w × kQ,Q0`, with `MQ = M × kTP × kelec × kpol × kS`.
+              </li>
+              <li>
+                `Standard = (Actual dose / Expected dose) × MU`, where actual dose is `Dw,Q`.
               </li>
               <li>
                 Default chamber data is seeded from your workbook for `ND,w` and from the 2024 IAEA

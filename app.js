@@ -101,6 +101,7 @@ const initialState = {
   pressure: "",
   pressureUnit: "mBar",
   referenceTemperature: 20,
+  expectedDose: 1,
   kqMode: "formula",
   kelec: 1,
   kpol: 1,
@@ -128,6 +129,7 @@ const ids = [
   "pressure",
   "pressureUnit",
   "referenceTemperature",
+  "expectedDose",
   "kqMode",
   "kelec",
   "kpol",
@@ -146,7 +148,7 @@ const results = {
   ks: document.getElementById("resultKs"),
   mq: document.getElementById("resultMq"),
   dw: document.getElementById("resultDw"),
-  dosePer100: document.getElementById("resultDosePer100"),
+  standard: document.getElementById("resultStandard"),
   status: document.getElementById("status"),
   trs398Fields: document.getElementById("trs398Fields"),
   legacyFields: document.getElementById("legacyFields")
@@ -307,6 +309,7 @@ function syncInputsToModel(event) {
     "temperature",
     "pressure",
     "referenceTemperature",
+    "expectedDose",
     "kelec",
     "kpol",
     "v1",
@@ -366,14 +369,17 @@ function render() {
     const kq = calculateKq();
     const mq = state.reading * ktp * state.kelec * state.kpol * ks;
     const dw = mq * state.ndw * kq;
-    const dosePer100 = state.mu === 0 ? NaN : (dw / state.mu) * 100;
+    if (state.expectedDose === "" || state.expectedDose === 0) {
+      throw new Error("Enter a non-zero expected dose to calculate Standard.");
+    }
+    const standard = (dw / state.expectedDose) * state.mu;
 
     results.ktp.textContent = formatNumber(ktp);
     results.ks.textContent = formatNumber(ks);
     results.kq.textContent = formatNumber(kq);
     results.mq.textContent = formatNumber(mq);
     results.dw.textContent = formatNumber(dw);
-    results.dosePer100.textContent = formatNumber(dosePer100);
+    results.standard.textContent = formatNumber(standard, 3);
 
     if (state.recombinationMode === "legacy") {
       results.status.textContent = loadWarning || "Legacy mode matches the spreadsheet shortcut for kS.";
@@ -389,7 +395,7 @@ function render() {
     results.kq.textContent = "—";
     results.mq.textContent = "—";
     results.dw.textContent = "—";
-    results.dosePer100.textContent = "—";
+    results.standard.textContent = "—";
     results.status.textContent = loadWarning || error.message;
     results.status.style.color = "var(--warn)";
     loadWarning = "";
