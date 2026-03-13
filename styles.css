@@ -19,9 +19,12 @@
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  width: 100%;
   min-height: 100vh;
+  overflow-x: hidden;
   font-family: "IBM Plex Sans", sans-serif;
   color: var(--text);
   background:
@@ -33,9 +36,11 @@ body {
 }
 
 .app-shell {
-  width: min(100%, 460px);
+  width: 100%;
+  max-width: 460px;
   margin: 0 auto;
   padding: 20px 14px 36px;
+  overflow-x: clip;
 }
 
 h1,
